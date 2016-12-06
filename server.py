@@ -28,12 +28,17 @@ r = redis.StrictRedis(host='localhost', port=6379, db=0)                        
 
 
 #################################### HERES WHAT SHE KNOWS HOW TO DO #########################################
-@app.route('/<query>')                                                     # People will probably request root directory
-def index(query):
+@app.route('/<obj_type>/<query>')                                                     # obj_type is etiher s for string or h for h, query is the key to use
+def index(obj_type, query):
+    x = 'blank'
+    print 'OBJ_TYPE: ' + obj_type 
     print 'QUERY: ' + query                                                        # So here is a routine for when that happens
-    x = jsonify(r.hgetall(query))
+    if obj_type == 'h':
+        x = jsonify(r.hgetall(query))
+    else:
+        x = jsonify(r.get(query))
     print "X - Type: {}".format(type(x))
-    print "Data: {}".format(x)
+    print "X - Data: {}".format(x)
     return x
     #return redis_store['pyTest']                       # Get a value from redis, and then return it.
 #############################################################################################################
