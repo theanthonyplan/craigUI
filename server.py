@@ -12,7 +12,7 @@ REDIS_URL = "redis://localhost:6379/0"                  # Where to, buddy?  Ah I
                                                         # No problem, but its dangerous out there.  Take these:
 from flask import Flask, jsonify                        #  First, my Flask.  It will be the bottle for your ship.
 from flask_redis import FlaskRedis                      #  Here's an enhancement for your Flask, it provides Redis.
-from redis import Redis                                 #  Get regular Redis interface too, just in case for hashes
+import redis                                 #  Get regular Redis interface too, just in case for hashes
 #############################################################################################################
 
 
@@ -20,21 +20,22 @@ from redis import Redis                                 #  Get regular Redis int
 #################################### OK FAM, LETS GET TO WORK ###############################################
 app = Flask(__name__)                                   # 1. We create an instance of our app using our Flask
 app.config['REDIS_URL'] = REDIS_URL                     # 2. Save the url for redis in our Flask config
-redis_store = FlaskRedis(app)                           # 3. Now we make an object to proxy our Redis commands  (via redis-py
-r = Redis()                                         # 4. Also make a client for our redis interface (for non strings)
+#redis_store = FlaskRedis(app)                           # 3. Now we make an object to proxy our Redis commands  (via redis-py
+r = redis.StrictRedis(host='localhost', port=6379, db=0)                                         # 4. Also make a client for our redis interface (for non strings)
 #############################################################################################################
 
 
 
 
 #################################### HERES WHAT SHE KNOWS HOW TO DO #########################################
-@app.route('/')                                                     # People will probably request root directory
-def index():                                                        # So here is a routine for when that happens
-    x = jsonify(r.hgetall('cb.pull.jjj.python'))
+@app.route('/<query>')                                                     # People will probably request root directory
+def index(query):
+    print 'QUERY: ' + query                                                        # So here is a routine for when that happens
+    x = jsonify(r.hgetall(query))
     print "X - Type: {}".format(type(x))
     print "Data: {}".format(x)
     return x
     #return redis_store['pyTest']                       # Get a value from redis, and then return it.
 #############################################################################################################
 
-app.run()
+app.run(host='0.0.0.0', port='5200')

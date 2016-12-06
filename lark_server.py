@@ -9,4 +9,4 @@ app.config['DEFAULT_LARK_SCOPES'] = set(['admin'])                      # Save c
 app.register_blueprint(redis_api_blueprint, url_prefix='/api/0')        # Mount the redis blueprint
 
 if __name__ == '__main__':                                              # Dont run this stuff if someone imports this file
-    app.run()                                                           # Only run it if it is the executing file
+    app.run(host='0.0.0.0', port='5000')                                                           # Only run it if it is the executing file
